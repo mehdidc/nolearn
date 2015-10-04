@@ -39,6 +39,7 @@ class PrintLog:
             ])
 
         if not nn.regression:
+            info_tabulate['train_acc'] = info['train_accuracy']
             info_tabulate['valid acc'] = info['valid_accuracy']
 
         if nn.custom_score:

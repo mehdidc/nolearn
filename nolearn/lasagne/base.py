@@ -418,7 +418,7 @@ class NeuralNet(BaseEstimator):
 
         train_iter = theano.function(
             inputs=inputs,
-            outputs=[loss_train],
+            outputs=[loss_train, accuracy],
             updates=updates,
             allow_input_downcast=True,
             )
@@ -487,6 +487,7 @@ class NeuralNet(BaseEstimator):
             epoch += 1
 
             train_losses = []
+            train_accuracies = []
             valid_losses = []
             valid_accuracies = []
             custom_score = []
@@ -494,9 +495,10 @@ class NeuralNet(BaseEstimator):
             t0 = time()
 
             for Xb, yb in self.batch_iterator_train(X_train, y_train):
-                batch_train_loss = self.apply_batch_func(
+                batch_train_loss, accuracy = self.apply_batch_func(
                     self.train_iter_, Xb, yb)
                 train_losses.append(batch_train_loss)
+                train_accuracies.append(accuracy)
 
             for Xb, yb in self.batch_iterator_test(X_valid, y_valid):
                 batch_valid_loss, accuracy = self.apply_batch_func(
@@ -509,6 +511,7 @@ class NeuralNet(BaseEstimator):
                     custom_score.append(self.custom_score[1](yb, y_prob))
 
             avg_train_loss = np.mean(train_losses)
+            avg_train_accuracy = np.mean(train_accuracies)
             avg_valid_loss = np.mean(valid_losses)
             avg_valid_accuracy = np.mean(valid_accuracies)
             if custom_score:
@@ -523,6 +526,7 @@ class NeuralNet(BaseEstimator):
                 'epoch': num_epochs_past + epoch,
                 'train_loss': avg_train_loss,
                 'train_loss_best': best_train_loss == avg_train_loss,
+                'train_accuracy': avg_train_accuracy,
                 'valid_loss': avg_valid_loss,
                 'valid_loss_best': best_valid_loss == avg_valid_loss,
                 'valid_accuracy': avg_valid_accuracy,
