@@ -217,7 +217,7 @@ class EarlyStopping(object):
     def __init__(self, patience=100, criterion='valid_loss',
                  criterion_smaller_is_better=True):
         self.patience = patience
-        self.best_valid = np.inf
+        self.best_valid = (np.inf if criterion_smaller_is_better is True else -np.inf)
         self.best_valid_epoch = 0
         self.best_weights = None
         self.criterion = criterion
