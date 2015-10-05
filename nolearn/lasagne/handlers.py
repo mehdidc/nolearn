@@ -230,7 +230,7 @@ class EarlyStopping(object):
             cond = current_valid < self.best_valid
         else:
             cond = current_valid > self.best_valid
-        if cond is True:
+        if cond:
             self.best_valid = current_valid
             self.best_valid_epoch = current_epoch
             self.best_weights = nn.get_all_params_values()
