@@ -213,16 +213,24 @@ class PrintLayerInfo:
 
 
 class EarlyStopping(object):
-    def __init__(self, patience=100):
+
+    def __init__(self, patience=100, criterion='valid_loss',
+                 criterion_smaller_is_better=True):
         self.patience = patience
         self.best_valid = np.inf
         self.best_valid_epoch = 0
         self.best_weights = None
+        self.criterion = criterion
+        self.criterion_smaller_is_better = criterion_smaller_is_better
 
     def __call__(self, nn, train_history):
-        current_valid = train_history[-1]['valid_loss']
+        current_valid = train_history[-1][self.criterion]
         current_epoch = train_history[-1]['epoch']
-        if current_valid < self.best_valid:
+        if self.criterion_smaller_is_better:
+            cond = current_valid < self.best_valid
+        else:
+            cond = current_valid > self.best_valid
+        if cond is True:
             self.best_valid = current_valid
             self.best_valid_epoch = current_epoch
             self.best_weights = nn.get_all_params_values()
