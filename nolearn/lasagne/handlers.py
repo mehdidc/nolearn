@@ -237,8 +237,8 @@ class EarlyStopping(object):
         elif self.best_valid_epoch + self.patience < current_epoch:
             if nn.verbose:
                 print("Early stopping.")
-                print("Best valid loss was {:.6f} at epoch {}.".format(
-                    self.best_valid, self.best_valid_epoch))
+                print("Best {:s} was {:.6f} at epoch {}.".format(
+                    self.criterion, self.best_valid, self.best_valid_epoch))
             nn.load_weights_from(self.best_weights)
             if nn.verbose:
                 print("Weights set.")
